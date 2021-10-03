@@ -1,40 +1,33 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css';
-import MovieList from './components/MovieList';
-import MovieListHeading from './components/MovieListHeading';
-import SearchBox from './components/SearchBox';
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import Header from "./components/Header";
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import Home from "./components/Home/index";
+import Favourites from "./components/Favourites/index";
+import TopRated from "./components/TopRated/index";
+import SearchResults from "./components/SearchResults";
+import MovieDetail from "./components/MovieDetail";
+import Trending from './components/Trending'
+
 
 const App = () => {
-	const [movies, setMovies] = useState([]);
-	const [searchValue, setSearchValue] = useState('');
-
-	const getMovieRequest = async (searchValue) => {
-		const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=263d22d8`;
-
-		const response = await fetch(url);
-		const responseJson = await response.json();
-
-		if (responseJson.Search) {
-			setMovies(responseJson.Search);
-		}
-	};
-
-	useEffect(() => {
-		getMovieRequest(searchValue);
-	}, [searchValue]);
-
-	return (
-		<div className='container-fluid movie-app'>
-			<div className='row d-flex align-items-center mt-4 mb-4'>
-				<MovieListHeading heading='Movies' />
-				<SearchBox searchValue={searchValue} setSearchValue={setSearchValue} />
-			</div>
-			<div className='row'>
-				<MovieList movies={movies} />
-			</div>
-		</div>
-	);
+  return (
+    <Router>
+      <div style={{ maxWidth: 1365, margin: "0 auto" }}>
+        <Header />
+        <Switch>
+          <Route path="/favourites" component={Favourites} />
+          <Route path="/trending" component={Trending} />
+          <Route path="/top-rated" component={TopRated} />
+          <Route path="/search/:searchValue" component={SearchResults} />
+          <Route path="/movies/:item" component={MovieDetail} />
+          <Route path="/home" component={Home} />
+          <Redirect form="/" to="/home" />
+        </Switch>
+      </div>
+    </Router >
+  );
 };
 
 export default App;
