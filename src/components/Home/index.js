@@ -4,6 +4,7 @@ import List from "../List/index"
 
 
 const Home = () => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"))
     const [trending, setTrending] = useState([])
     const [topRated, setTopRated] = useState([])
     const [favourites, setFavourites] = useState([])
@@ -24,7 +25,7 @@ const Home = () => {
     return <>
         <List title="Trending" movies={trending} max={8} more />
         <List title="Top rated" movies={topRated} max={8} more />
-        {favourites.length ? <List title="Favourites" movies={favourites} max={8} more /> : null}
+        {favourites.length && currentUser ? <List title="Favourites" movies={favourites} max={8} more /> : null}
 
     </>
 }

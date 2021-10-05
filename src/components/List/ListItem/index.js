@@ -5,8 +5,9 @@ import { useHistory } from 'react-router'
 
 
 const ListItem = ({ item }) => {
-    const favourite = JSON.parse(localStorage.getItem("favourites")) ? JSON.parse(localStorage.getItem("favourites")) : []
 
+    const favourite = JSON.parse(localStorage.getItem("favourites")) ? JSON.parse(localStorage.getItem("favourites")) : []
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"))
     const history = useHistory()
     return <ItemContainer style={{ position: "relative" }} onClick={() => {
         history.push({ pathname: `/movies/${item.name}`, state: item })
@@ -15,14 +16,14 @@ const ListItem = ({ item }) => {
         <MovieDetails>
             <span>{item.name || item.title}</span>
             <span>Rating: {item.vote_average}/10</span>
-            <div>
+            {currentUser && <div>
                 <span style={{ cursor: "pointer", marginRight: 10, display: "inline-block" }}>Add to favourite</span>
                 <svg
                     width='1em'
                     height='1em'
                     viewBox='0 0 16 16'
                     class='bi bi-heart-fill'
-                    fill={favourite.find(i => i.id === item.id) ? "red" : "yellow"}
+                    fill={favourite.find(i => i.id === item.id)?.user === currentUser.email ? "red" : "yellow"}
                     xmlns='http://www.w3.org/2000/svg'
                 >
                     <path
@@ -30,16 +31,18 @@ const ListItem = ({ item }) => {
                         d='M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z'
                         onClick={(e) => {
                             e.stopPropagation()
+
                             if (favourite.find(i => i.id === item.id)) {
                                 localStorage.setItem("favourites", JSON.stringify(favourite.filter(i => i.id !== item.id)))
                             } else {
-                                localStorage.setItem("favourites", JSON.stringify([...favourite, item]))
+                                const userItem = { user: currentUser.email, ...item }
+                                localStorage.setItem("favourites", JSON.stringify([...favourite, userItem]))
                             }
                             history.go(0)
                         }}
                     />
                 </svg>
-            </div>
+            </div>}
         </MovieDetails>
         <div
             onClick={() => {

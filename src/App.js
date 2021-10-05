@@ -9,15 +9,22 @@ import TopRated from "./components/TopRated/index";
 import SearchResults from "./components/SearchResults";
 import MovieDetail from "./components/MovieDetail";
 import Trending from './components/Trending'
+import Form from './components/Form'
 
 
 const App = () => {
+  const current_user = JSON.parse(localStorage.getItem("currentUser"))
+
+
+
   return (
     <Router>
       <div style={{ maxWidth: 1365, margin: "0 auto" }}>
         <Header />
         <Switch>
-          <Route path="/favourites" component={Favourites} />
+          {!current_user && <Route path="/sign_up" component={Form} />}
+          {!current_user && <Route path="/login" component={Form} />}
+          {current_user && <Route path="/favourites" component={Favourites} />}
           <Route path="/trending" component={Trending} />
           <Route path="/top-rated" component={TopRated} />
           <Route path="/search/:searchValue" component={SearchResults} />
